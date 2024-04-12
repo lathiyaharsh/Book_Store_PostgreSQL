@@ -6,8 +6,8 @@ const { login, profile, signup, remove } = require("../controller/user");
 
 routes.post("/login", login);
 
-routes.post("/signup", uploadImgPath, signup);
 routes.use(jwtauth);
+routes.post("/signup", uploadImgPath, signup);
 routes.get("/profile", profile);
 routes.delete("/remove", remove);
 

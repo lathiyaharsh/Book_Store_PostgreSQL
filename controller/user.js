@@ -6,9 +6,8 @@ const path = require("path");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { hostname } = require("os");
-const prisma  = require("../config/prisma");
+const prisma = require("../config/prisma");
 const { Prisma } = require("@prisma/client/extension");
-
 
 const deletefile = async (file) => {
   try {
@@ -21,15 +20,18 @@ const deletefile = async (file) => {
 module.exports.signup = async (req, res) => {
   try {
     if (!req.body)
-      return res.status(400).json({ message: 'Please fill in all details' });
+      return res.status(400).json({ message: "Please fill in all details" });
 
-    const { name, email, password, confirmpassword, gender, interest } = req.body;
+    const { name, email, password, confirmpassword, gender, interest } =
+      req.body;
 
     if (password.length <= 6 || password.length >= 20)
-      return res.status(400).json({ message: 'Password must be between 6 and 20 characters' });
-    
+      return res.status(400).json({ message: userMassage.error.password });
+
     if (confirmpassword !== password) {
-      return res.status(400).json({ message: 'Passwords do not match' });
+      return res
+        .status(400)
+        .json({ message: userMassage.error.passwordNotMatch });
     }
 
     const existingUser = await prisma.user.findUnique({
@@ -40,15 +42,14 @@ module.exports.signup = async (req, res) => {
 
     if (existingUser) {
       return res.status(400).json({
-        message: 'Email already exists',
+        message: userMassage.error.invalidEmail,
       });
     }
 
-    let image = '';
+    let image = "";
     if (req.file) {
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
-      console.log(baseUrl);
-      image = baseUrl + imgPath + '/' + req.file.filename;
+      const baseUrl = `${req.protocol}://${req.get("host")}`;
+      image = baseUrl + imgPath + "/" + req.file.filename;
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -58,26 +59,24 @@ module.exports.signup = async (req, res) => {
         name,
         email,
         gender,
-        interest: {
-          set: interest, 
-        },
+        interest,
         image,
         password: hashedPassword,
       },
     });
 
     if (!newUser)
-      return res.status(400).json({ message: 'Error creating user' });
+      return res.status(400).json({ message: userMassage.error.signUperror });
 
-    return res.status(201).json({ message: 'User created successfully' });
+    return res.status(201).json({ message: userMassage.success.signUpSuccess });
   } catch (error) {
-    if(req.file) await deletefile(req.file);
+    if (req.file) await deletefile(req.file);
     if (error instanceof ValidationError) {
       const errors = Object.values(error.errors).map((err) => err.message);
       return res.status(400).json({ errors });
     }
     console.log(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: userMassage.error.genericError });
   }
 };
 
@@ -147,9 +146,9 @@ module.exports.remove = async (req, res) => {
   try {
     const { id, image } = req.user.data;
     const deleteUser = await prisma.user.delete({
-      where:{
-        id
-      }
+      where: {
+        id,
+      },
     });
 
     if (!deleteUser)

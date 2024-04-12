@@ -22,8 +22,6 @@ module.exports.create = async (req, res) => {
       userId = id,
     } = req.body;
 
-   
-
     if (released_year > new Date().getFullYear())
       return res.status(400).json({ message: bookMassage.error.year });
 
@@ -65,7 +63,7 @@ module.exports.list = async (req, res) => {
         where: {
           name: {
             contains: search,
-            mode: 'insensitive' 
+            mode: "insensitive",
           },
         },
       });
@@ -108,16 +106,14 @@ module.exports.findOne = async (req, res) => {
   try {
     const { id } = req.params;
     const bookId = parseInt(id);
-    const bookDetails = await prisma.book.findUnique(
-      {
-        where: { id:bookId },
-        include: {
-          user: {
-            select: { name: true }
-          }
-        }
-      }
-    );
+    const bookDetails = await prisma.book.findUnique({
+      where: { id: bookId },
+      include: {
+        user: {
+          select: { name: true },
+        },
+      },
+    });
 
     if (!bookDetails)
       return res.status(404).json({ message: bookMassage.error.notFound });
@@ -143,21 +139,20 @@ module.exports.update = async (req, res) => {
       author,
       category,
       price,
-      released_year
+      released_year,
     } = req.body;
 
     const editBookDetails = await prisma.book.update({
-      where: { id : bookId},
-      data:{
+      where: { id: bookId },
+      data: {
         name,
         description,
-        no_of_page : Number(no_of_page),
+        no_of_page: Number(no_of_page),
         author,
         category,
-        price:Number(price),
-        released_year:Number(released_year)
+        price: Number(price),
+        released_year: Number(released_year),
       },
-    
     });
 
     if (!editBookDetails)
@@ -169,7 +164,7 @@ module.exports.update = async (req, res) => {
       message: bookMassage.success.update,
     });
   } catch (error) {
-    if (error.name === "SequelizeValidationError") {
+    if (error.name === "ValidationError") {
       const errors = Object.values(error.errors).map((err) => err.message);
       return res.status(400).json({ errors });
     }
@@ -181,7 +176,7 @@ module.exports.update = async (req, res) => {
 module.exports.remove = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleteBook = await prisma.book.delete({ where: { id : Number(id) } });
+    const deleteBook = await prisma.book.delete({ where: { id: Number(id) } });
     if (!deleteBook)
       return res.status(400).json({ message: bookMassage.error.delete });
 
