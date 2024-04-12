@@ -1,10 +1,7 @@
 const path = require("path");
 const multer = require("multer");
 const imgPath = "/uploads/user";
-
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
-
+const prisma = require('../config/prisma');
 const user = prisma.User;
 
 const imageStorage = multer.diskStorage({
@@ -20,3 +17,5 @@ const imageStorage = multer.diskStorage({
 const uploadImgPath = multer({ storage: imageStorage }).single("image");
 
 module.exports = { user, uploadImgPath, imgPath };
+
+

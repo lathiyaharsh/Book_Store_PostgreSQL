@@ -145,8 +145,7 @@ module.exports.update = async (req, res) => {
       price,
       released_year
     } = req.body;
-    const { isValid, error } = prisma.book.validate(book);
-    const validatedUser = await prisma.book.validate(book);
+
     const editBookDetails = await prisma.book.update({
       where: { id : bookId},
       data:{
