@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { user, imgPath } = require("../models/user");
+const { imgPath } = require("../models/user");
 const { userMassage } = require("../config/message");
 const fs = require("fs");
 const path = require("path");
@@ -20,7 +20,7 @@ const deletefile = async (file) => {
 module.exports.signup = async (req, res) => {
   try {
     if (!req.body)
-      return res.status(400).json({ message: "Please fill in all details" });
+      return res.status(400).json({ message: userMassage.error.fillDetails });
 
     const { name, email, password, confirmpassword, gender, interest } =
       req.body;

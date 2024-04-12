@@ -105,9 +105,9 @@ module.exports.list = async (req, res) => {
 module.exports.findOne = async (req, res) => {
   try {
     const { id } = req.params;
-    const bookId = parseInt(id);
+    
     const bookDetails = await prisma.book.findUnique({
-      where: { id: bookId },
+      where: { id: Number(id) },
       include: {
         user: {
           select: { name: true },
@@ -131,7 +131,6 @@ module.exports.findOne = async (req, res) => {
 module.exports.update = async (req, res) => {
   try {
     const { id } = req.params;
-    const bookId = parseInt(id);
     const {
       name,
       description,
@@ -143,7 +142,7 @@ module.exports.update = async (req, res) => {
     } = req.body;
 
     const editBookDetails = await prisma.book.update({
-      where: { id: bookId },
+      where: { id: Number(id) },
       data: {
         name,
         description,
