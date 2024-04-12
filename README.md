@@ -1,5 +1,5 @@
 
-<h1 align="center">Book Store Using Sequelize 👋</h1>
+<h1 align="center">Book Store Using PostgreSQL 👋</h1>
   
 ![badge](https://img.shields.io/badge/license-Apache-brightgreen)<br />
 
@@ -19,12 +19,9 @@
 💾 npm init
 💾 npm install
 💾 create .env file
-  DATABASE=''
-  USERNAMEDB=''
-  PASSWORD=''
-  HOST=''
-  PORT=''
-  SECRETKEY=''
+DATABASE_URL="postgresql://yourusername:yourpassword@localhost:5432/bookstore"
+PORT=''
+SECRETKEY=''
 
 
 
